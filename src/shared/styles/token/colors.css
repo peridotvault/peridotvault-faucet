@@ -1,0 +1,81 @@
+:root {
+  /* =========================
+     Brand tokens (identity)
+    ========================= */
+  --brand-1: #349b65;
+  --brand-2: #349b6650;
+  --brand-3: #87ee83;
+
+  /* =========================
+     Semantic tokens (UI)
+    ========================= */
+  --background: #1a1a1a;
+  --foreground: #e0e4e4;
+
+  --surface: #0a0c0b; /* background_secondary */
+  --surface-foreground: white;
+
+  --card: #0a0c0b; /* background_secondary */
+  --card-foreground: white;
+
+  --primary: var(--brand-1);
+  --secondary: var(--brand-2);
+  --accent: var(--brand-3);
+
+  --button: #414141;
+  --border: #ffffff28;
+
+  /* TEXT  */
+  --paragraph: #b5b5b5;
+  --label: #ffffff60;
+
+  --muted: #363636; /* background_disabled */
+  --muted-foreground: rgb(125, 125, 125); /* text_disabled */
+
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(62.115% 0.13883 65.441);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  /* =========================
+     Store
+    ========================= */
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+
+  --color-button: var(--button);
+  --color-border: var(--border);
+
+  /* TEXT  */
+  --color-paragraph: var(--paragraph);
+  --color-label: var(--label);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--background);
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "mint": "EvC4a84ESadPhRFLzwD8WPqXQEk5Te8TddKDRVGqFSzh",
+    "name": "IDRX",
+    "symbol": "IDRX",
+    "decimals": 6,
+    "maxClaim": 200000
+  },
+  {
+    "mint": "7DFKVQY9PBpP7iMT2rwc3CKQBwuDiiZRZxaPrE5EbHCZ",
+    "name": "USDT",
+    "symbol": "USDT",
+    "decimals": 6,
+    "maxClaim": 20
+  }
+]
