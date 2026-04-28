@@ -1,0 +1,13 @@
+ignoredBuiltDependencies:
+  - '@stellar/stellar-sdk'
+  - bufferutil
+  - protobufjs
+  - sharp
+  - unrs-resolver
+  - usb
+
+onlyBuiltDependencies:
+  - bigint-buffer
+  - blake-hash
+  - tiny-secp256k1
+  - utf-8-validate
