@@ -5,18 +5,11 @@ import fs from 'fs';
 import path from 'path';
 
 const LIST_TOKEN_PATH = path.join(process.cwd(), 'data', 'list_token.json');
-const CLAIMS_PATH = path.join(process.cwd(), 'data', 'claims.json');
 const EIGHT_HOURS_MS = 8 * 60 * 60 * 1000;
 
-function ensureDataDir() {
-  const dir = path.join(process.cwd(), 'data');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(CLAIMS_PATH)) {
-    fs.writeFileSync(CLAIMS_PATH, JSON.stringify({}));
-  }
-}
+// In-memory rate limit store (best-effort on serverless platforms like Vercel)
+// Cold starts will reset this, but client-side fingerprint provides primary protection.
+const claimsStore = new Map<string, { lastClaimAt: string; amount: number }>();
 
 export function getConnection() {
   return new Connection(clusterApiUrl('devnet'), 'confirmed');
@@ -51,29 +44,13 @@ export function getTokenList(): TokenConfig[] {
   return JSON.parse(raw) as TokenConfig[];
 }
 
-type ClaimRecord = {
-  lastClaimAt: string;
-  amount: number;
-};
-
-function getClaims(): Record<string, ClaimRecord> {
-  ensureDataDir();
-  if (!fs.existsSync(CLAIMS_PATH)) {
-    return {};
-  }
-  const raw = fs.readFileSync(CLAIMS_PATH, 'utf-8');
-  return JSON.parse(raw) as Record<string, ClaimRecord>;
-}
-
-function setClaims(claims: Record<string, ClaimRecord>) {
-  ensureDataDir();
-  fs.writeFileSync(CLAIMS_PATH, JSON.stringify(claims, null, 2));
+function buildKey(fingerprint: string, mint: string): string {
+  return `${fingerprint}_${mint}`;
 }
 
 export function checkRateLimit(fingerprint: string, mint: string): { allowed: boolean; nextClaimAt?: Date; remainingMs?: number } {
-  const key = `${fingerprint}_${mint}`;
-  const claims = getClaims();
-  const record = claims[key];
+  const key = buildKey(fingerprint, mint);
+  const record = claimsStore.get(key);
   if (!record) return { allowed: true };
   const lastTime = new Date(record.lastClaimAt).getTime();
   const now = Date.now();
@@ -83,10 +60,8 @@ export function checkRateLimit(fingerprint: string, mint: string): { allowed: bo
 }
 
 export function recordClaim(fingerprint: string, mint: string, amount: number) {
-  const key = `${fingerprint}_${mint}`;
-  const claims = getClaims();
-  claims[key] = { lastClaimAt: new Date().toISOString(), amount };
-  setClaims(claims);
+  const key = buildKey(fingerprint, mint);
+  claimsStore.set(key, { lastClaimAt: new Date().toISOString(), amount });
 }
 
 export async function ensureFaucetSol(minSol = 0.05): Promise<void> {
